@@ -1,4 +1,5 @@
 .vscode
+deploy/
 
 # CDK asset staging directory
 .cdk.staging
