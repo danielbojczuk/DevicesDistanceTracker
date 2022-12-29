@@ -3,6 +3,7 @@ using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.IoT;
 using Amazon.CDK.AWS.Lambda;
+using Amazon.CDK.AWS.Lambda.EventSources;
 using Constructs;
 using static Amazon.CDK.AWS.IoT.CfnTopicRule;
 
@@ -20,7 +21,8 @@ namespace Infrastructure
         BillingMode = BillingMode.PROVISIONED,
         ReadCapacity = 5,
         WriteCapacity = 5,
-        RemovalPolicy = RemovalPolicy.RETAIN
+        RemovalPolicy = RemovalPolicy.RETAIN,
+        Stream = StreamViewType.NEW_AND_OLD_IMAGES,
       });
 
       foreach (var tag in this.GetDefaultTags())
@@ -72,20 +74,21 @@ namespace Infrastructure
         Tags = this.GetDefaultTags()
       });
 
-      var distanceTrackerLambdaFunction = new Function(this, "DistanceTrackerFunction", new FunctionProps
+      var DistanceTrackerLambdaFunction = new Function(this, "DistanceTrackerFunction", new FunctionProps
       {
         Runtime = Runtime.DOTNET_6,
         MemorySize = 128,
         Architecture = Architecture.ARM_64,
         Handler = "DistanceTrackerFunction::DistanceTrackerFunction.Function::FunctionHandler",
         Code = Code.FromAsset("deploy/DistanceTrackerFunction"),
-        Role = LambdaFunctionExecutionRole,
+        //Role = LambdaFunctionExecutionRole,
         FunctionName = LambdaFunctionName,
       });
       foreach (var tag in this.GetDefaultTags())
       {
-        Amazon.CDK.Tags.Of(distanceTrackerLambdaFunction).Add(tag.Key, tag.Value);
+        Amazon.CDK.Tags.Of(DistanceTrackerLambdaFunction).Add(tag.Key, tag.Value);
       }
+      DistanceTrackerLambdaFunction.AddEventSource(new DynamoEventSource(DynamoDbTable, new DynamoEventSourceProps { StartingPosition = StartingPosition.LATEST, BatchSize = 100, MaxBatchingWindow = Duration.Seconds(15) }));
     }
     private CfnTag[] GetDefaultTags()
     {

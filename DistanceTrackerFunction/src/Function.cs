@@ -1,5 +1,7 @@
 using Amazon.Lambda.Core;
-using DistanceTrackerFunction.Domain;
+using Amazon.Lambda.DynamoDBEvents;
+using DistanceTrackerFunction.Domain.Devices;
+using DistanceTrackerFunction.Domain.Tracker;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -7,21 +9,11 @@ namespace DistanceTrackerFunction;
 
 public class Function
 {
-  public void FunctionHandler(object input, ILambdaContext context)
+  public async void FunctionHandler(DynamoDBEvent input, ILambdaContext context)
   {
-    //Get old and new data from Vehicle.
-    //If position didnt changed, car is stoped, then check the HandHeld position.
-    //If difference between vehicle and handheld positions are over 50m, send notification.
-    var device = new Device
-    {
-      Longitude = 1,
-      Latitude = 1,
-      MacAddress = "macAddress",
-      DeviceType = DeviceTypeEnum.Handheld,
-      LastUpdated = new DateTime()
-    };
+    var vehicles = VehicleMapper.FromDynamoDbEvents(input);
 
-    Console.WriteLine(device);
-    Console.WriteLine(input);
+    var tracker = new DistanceTracker(null, null, null, null);
+    await tracker.Notify(vehicles);
   }
 }

@@ -1,4 +1,4 @@
-namespace DistanceTrackerFunction.Domain;
+namespace DistanceTrackerFunction.Domain.Devices;
 
 public enum DeviceTypeEnum
 {
