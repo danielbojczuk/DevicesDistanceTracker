@@ -46,7 +46,7 @@ namespace Infrastructure
         AssumedBy = new ServicePrincipal("lambda.amazonaws.com"),
         RoleName = "LambdaFunctionExecutionRole",
       });
-      foreach (var Policy in this.GetLambdaFunctionPolicyDocument(LambdaFunctionName))
+      foreach (var Policy in this.GetLambdaFunctionPolicyDocument(LambdaFunctionName, DynamoDbTable.TableName, DynamoDbTable.TableStreamArn))
       {
         LambdaFunctionExecutionRole.AddToPolicy(new PolicyStatement(Policy));
       }
@@ -81,14 +81,15 @@ namespace Infrastructure
         Architecture = Architecture.ARM_64,
         Handler = "DistanceTrackerFunction::DistanceTrackerFunction.Function::FunctionHandler",
         Code = Code.FromAsset("deploy/DistanceTrackerFunction"),
-        //Role = LambdaFunctionExecutionRole,
+        Role = LambdaFunctionExecutionRole,
         FunctionName = LambdaFunctionName,
+        Timeout = Duration.Seconds(10),
       });
       foreach (var tag in this.GetDefaultTags())
       {
         Amazon.CDK.Tags.Of(DistanceTrackerLambdaFunction).Add(tag.Key, tag.Value);
       }
-      DistanceTrackerLambdaFunction.AddEventSource(new DynamoEventSource(DynamoDbTable, new DynamoEventSourceProps { StartingPosition = StartingPosition.LATEST, BatchSize = 100, MaxBatchingWindow = Duration.Seconds(15) }));
+      DistanceTrackerLambdaFunction.AddEventSource(new DynamoEventSource(DynamoDbTable, new DynamoEventSourceProps { StartingPosition = StartingPosition.LATEST, BatchSize = 100, MaxBatchingWindow = Duration.Seconds(15), RetryAttempts = 0 }));
     }
     private CfnTag[] GetDefaultTags()
     {
@@ -112,7 +113,7 @@ namespace Infrastructure
                 }
       };
     }
-    private PolicyStatementProps[] GetLambdaFunctionPolicyDocument(string lambdaName)
+    private PolicyStatementProps[] GetLambdaFunctionPolicyDocument(string lambdaName, string devicesTableName, string streamArn)
     {
       return new PolicyStatementProps[]
       {
@@ -137,10 +138,65 @@ namespace Infrastructure
                       {
                           Service = "logs",
                           Resource = "log-group",
-                          ResourceName = $"aws/lambda/{lambdaName}"
+                          ResourceName = $"/aws/lambda/{lambdaName}",
+                          ArnFormat = ArnFormat.COLON_RESOURCE_NAME,
+                      },this),
+                      Arn.Format(new ArnComponents
+                      {
+                          Service = "logs",
+                          Resource = "log-group",
+                          ResourceName = $"/aws/lambda/{lambdaName}:*",
+                          ArnFormat = ArnFormat.COLON_RESOURCE_NAME,
                       },this)
                   }
-        }
+        },
+        new PolicyStatementProps {
+          Effect = Effect.ALLOW,
+          Actions = new[] { "dynamodb:GetItem" },
+          Resources = new[]
+                  {
+                      Arn.Format(new ArnComponents
+                      {
+                          Service = "dynamodb",
+                          Resource = "table",
+                          ResourceName = $"{devicesTableName}"
+                      },this),
+                      Arn.Format(new ArnComponents
+                      {
+                          Service = "dynamodb",
+                          Resource = "table",
+                          ResourceName = "DevicePairs"
+                      },this)
+                  },
+        },
+        new PolicyStatementProps {
+          Effect = Effect.ALLOW,
+          Actions = new[] { "sns:Publish" },
+          Resources = new[]
+                  {
+                      Arn.Format(new ArnComponents
+                      {
+                          Service = "sns",
+                          Resource = "PostNL_Topic",
+                      },this)
+                  }
+        },
+        new PolicyStatementProps {
+          Effect = Effect.ALLOW,
+          Actions = new[] { "dynamodb:DescribeStream", "dynamodb:GetRecords", "dynamodb:GetShardIterator" },
+          Resources = new[]
+                  {
+                      streamArn
+                  }
+        },
+        new PolicyStatementProps {
+          Effect = Effect.ALLOW,
+          Actions = new[] { "dynamodb:ListStreams" },
+          Resources = new[]
+                  {
+                      "*"
+                  }
+        },
       };
     }
   }
