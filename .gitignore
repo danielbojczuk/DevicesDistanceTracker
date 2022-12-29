@@ -1,5 +1,6 @@
 .vscode
 deploy/
+coverage.json
 
 # CDK asset staging directory
 .cdk.staging
