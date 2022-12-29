@@ -9,9 +9,9 @@ cd $ROOT_DIR/DistanceTrackerFunction/src
 dotnet restore
 dotnet build
 
-echo "### Testing DistanceTrackerFunction ###"
+# echo "### Testing DistanceTrackerFunction ###"
 cd $ROOT_DIR/DistanceTrackerFunction/test
-dotnet test /p:CollectCoverage=true /p:Threshold=\"90,90,90\" /p:ThresholdType=\"line,branch,method\"
+dotnet test
 
 echo "### Publishing DistanceTrackerFunction ###"
 dotnet publish -c Release -r linux-arm64 --no-self-contained -o ../../deploy/DistanceTrackerFunction 
