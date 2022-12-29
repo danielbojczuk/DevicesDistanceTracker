@@ -3,8 +3,9 @@ using Amazon.Lambda.DynamoDBEvents;
 using static Amazon.Lambda.DynamoDBEvents.DynamoDBEvent;
 using Amazon.DynamoDBv2.Model;
 using DistanceTrackerFunction.Domain.Devices;
+using Amazon.DynamoDBv2;
 
-namespace DistanceTrackerFunction.Tests.Domain;
+namespace DistanceTrackerFunction.Tests.Domain.Devices;
 
 public class VehicleMapperTest
 {
@@ -36,19 +37,22 @@ public class VehicleMapperTest
                 Dynamodb = new StreamRecord() {
                     NewImage = this.BuildDynamoDbImage("macAddress",10,10,"vehicle","2022-10-10T16:45:33Z"),
                     OldImage = this.BuildDynamoDbImage("macAddress",10,10,"vehicle","2022-10-10T16:45:33Z"),
-                }
+                },
+                EventName = new OperationType("MODIFY")
             },
             new DynamodbStreamRecord() {
                 Dynamodb = new StreamRecord() {
                     NewImage = this.BuildDynamoDbImage("macAddress2",10,10,"handheld","2022-10-10T16:45:33Z"),
                     OldImage = this.BuildDynamoDbImage("macAddress2",10,10,"handheld","2022-10-10T16:45:33Z"),
-                }
+                },
+                EventName = new OperationType("MODIFY")
             },
             new DynamodbStreamRecord() {
                 Dynamodb = new StreamRecord() {
                     NewImage = this.BuildDynamoDbImage("macAddress",10,10,"vehicle","2022-10-10T16:45:33Z"),
                     OldImage = this.BuildDynamoDbImage("macAddress",20,20,"vehicle","2022-10-10T16:45:33Z"),
-                }
+                },
+                EventName = new OperationType("MODIFY")
             }
         },
     };

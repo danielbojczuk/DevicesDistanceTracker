@@ -4,7 +4,7 @@ using DistanceTrackerFunction.Domain;
 using DistanceTrackerFunction.Domain.Devices;
 using Moq;
 
-namespace DistanceTrackerFunction.Tests.Tracker;
+namespace DistanceTrackerFunction.Tests.Domain.Tracker;
 
 public class DistanceTrackerTest
 {

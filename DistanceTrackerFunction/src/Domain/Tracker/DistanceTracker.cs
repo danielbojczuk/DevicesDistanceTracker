@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using DistanceTrackerFunction.Domain.Devices;
 
 namespace DistanceTrackerFunction.Domain.Tracker;
@@ -20,33 +21,44 @@ public class DistanceTracker
   {
     foreach (var vehicle in vehicles)
     {
-      var handheldMacAddress = await this.devicePairRepository.GetHandheldMacAddressByVehicle(vehicle);
-
-      if (handheldMacAddress == null)
+      try
       {
-        continue;
+        await this.ProcessVehicle(vehicle);
       }
-
-      var handheld = await this.deviceRepository.GetByMacAddress((string)handheldMacAddress);
-
-      if (handheld == null)
+      catch (Exception ex)
       {
-        this.logger.Warning("No handheld found for the vehicle", vehicle);
-        continue;
+        this.logger.Error("Error Processing Vehicle", ex, vehicle);
       }
+    }
+  }
 
-      var distance = DistanceCalculator.CalculateDistanceBetweenDevicesInMeters((Device)handheld, vehicle);
+  private async Task ProcessVehicle(Device vehicle)
+  {
+    var handheldMacAddress = await this.devicePairRepository.GetHandheldMacAddressByVehicle(vehicle);
+    if (handheldMacAddress == null)
+    {
+      return;
+    }
 
-      if (distance > 50)
+    var handheld = await this.deviceRepository.GetByMacAddress((string)handheldMacAddress);
+
+    if (handheld == null)
+    {
+      this.logger.Warning("No handheld found for the vehicle", vehicle);
+      return;
+    }
+
+    var distance = DistanceCalculator.CalculateDistanceBetweenDevicesInMeters((Device)handheld, vehicle);
+
+    if (distance > 50)
+    {
+      await this.notificationRepository.SendNotification(new Notification()
       {
-        await this.notificationRepository.SendNotification(new Notification()
-        {
-          HandheldId = ((Device)handheld).MacAddress,
-          VehicleId = ((Device)vehicle).MacAddress,
-          Latitude = ((Device)vehicle).Latitude,
-          Longitude = ((Device)vehicle).Longitude,
-        });
-      }
+        HandheldId = ((Device)handheld).MacAddress,
+        VehicleId = ((Device)vehicle).MacAddress,
+        Latitude = ((Device)vehicle).Latitude,
+        Longitude = ((Device)vehicle).Longitude,
+      });
     }
   }
 }

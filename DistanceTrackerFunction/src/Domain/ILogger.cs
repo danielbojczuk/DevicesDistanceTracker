@@ -5,5 +5,5 @@ namespace DistanceTrackerFunction.Domain;
 public interface ILogger
 {
   public void Warning(string message, object? data);
-  public void Error(string message, Exception exception);
+  public void Error(string message, Exception exception, object? data);
 }

@@ -10,7 +10,7 @@ public static class VehicleMapper
     var device = new List<Device>();
     foreach (var dynamoEvent in events.Records)
     {
-      if (VehicleMapper.IsHandheld(dynamoEvent) || VehicleMapper.PositionChanged(dynamoEvent))
+      if (dynamoEvent.EventName.Value != "MODIFY" || VehicleMapper.IsHandheld(dynamoEvent) || VehicleMapper.PositionChanged(dynamoEvent))
       {
         continue;
       }

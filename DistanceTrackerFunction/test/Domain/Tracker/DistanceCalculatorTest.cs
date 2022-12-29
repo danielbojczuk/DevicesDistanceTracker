@@ -2,7 +2,7 @@ using Xunit;
 using DistanceTrackerFunction.Domain.Devices;
 using DistanceTrackerFunction.Domain.Tracker;
 
-namespace DistanceTrackerFunction.Tests.Tracker;
+namespace DistanceTrackerFunction.Tests.Domain.Tracker;
 
 public class DistanceCalculatorTest
 {
