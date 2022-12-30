@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using Amazon.Lambda.DynamoDBEvents;
 using DistanceTrackerFunction.Domain.Devices;
+using static Amazon.Lambda.DynamoDBEvents.DynamoDBEvent;
 
 namespace DistanceTrackerFunction.Domain.Tracker;
 
@@ -17,10 +19,24 @@ public class DistanceTracker
     this.notificationRepository = notificationRepo;
   }
 
-  public async Task Notify(List<Device> vehicles)
+  public async Task Notify(DynamoDBEvent events)
   {
-    foreach (var vehicle in vehicles)
+    foreach (var dynamoEvent in events.Records)
     {
+      if (this.PositionChanged(dynamoEvent))
+      {
+        continue;
+      }
+
+      var vehicle = new Device
+      {
+        MacAddress = dynamoEvent.Dynamodb.NewImage["macAddress"].S,
+        Latitude = Convert.ToDouble(dynamoEvent.Dynamodb.NewImage["latitude"].N),
+        Longitude = Convert.ToDouble(dynamoEvent.Dynamodb.NewImage["longitude"].N),
+        LastUpdated = DateTime.Parse(dynamoEvent.Dynamodb.NewImage["timestamp"].S),
+        DeviceType = DeviceTypeEnum.Vehicle
+      };
+
       try
       {
         await this.ProcessVehicle(vehicle);
@@ -60,5 +76,10 @@ public class DistanceTracker
         Longitude = ((Device)vehicle).Longitude,
       });
     }
+  }
+
+  private bool PositionChanged(DynamodbStreamRecord record)
+  {
+    return (record.Dynamodb.NewImage["latitude"].N != record.Dynamodb.OldImage["latitude"].N || record.Dynamodb.NewImage["longitude"].N != record.Dynamodb.OldImage["longitude"].N);
   }
 }

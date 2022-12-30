@@ -16,6 +16,10 @@
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.0" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.101.14" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.100.45" />
+    <PackageReference Include="AWSXRayRecorder" Version="2.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
