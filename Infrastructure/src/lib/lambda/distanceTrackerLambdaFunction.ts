@@ -2,8 +2,17 @@ import { ServiceStack } from '../serviceStack';
 import { Architecture, Code, Function, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { Duration } from 'aws-cdk-lib';
 import { IRole } from 'aws-cdk-lib/aws-iam';
-export const distanceTrackerLambdaFunction = (scope: ServiceStack, deviceTrackerLambdaFunctionName: string, lambdaExecutionRole: IRole ): Function => 
-   new Function(scope, "DistanceTrackerFunction", {
+import * as ssm from 'aws-cdk-lib/aws-ssm';
+
+export const distanceTrackerLambdaFunction = (scope: ServiceStack, deviceTrackerLambdaFunctionName: string, lambdaExecutionRole: IRole, deviceDynamoDbTableName: string ): Function => {
+
+   const devicePairsTable = ssm.StringParameter.valueForStringParameter(
+      scope, '/DevicesDistanceTracker/DevicePairs');
+
+   const notificationTopic = ssm.StringParameter.valueForStringParameter(
+      scope, '/DevicesDistanceTracker/NotificationSNSTopic');
+
+   return new Function(scope, "DistanceTrackerFunction", {
       runtime: Runtime.DOTNET_6,
       memorySize: 512,
       architecture: Architecture.ARM_64,
@@ -12,5 +21,11 @@ export const distanceTrackerLambdaFunction = (scope: ServiceStack, deviceTracker
       role: lambdaExecutionRole,
       functionName: deviceTrackerLambdaFunctionName,
       timeout: Duration.seconds(15),
-      tracing: Tracing.ACTIVE
+      tracing: Tracing.ACTIVE,
+      environment: {
+         "Vehicle2Handheld": devicePairsTable,
+         "DevicePositionTable": deviceDynamoDbTableName,
+         "NotificationSNSTopic": notificationTopic,
+      }
     })
+   }
