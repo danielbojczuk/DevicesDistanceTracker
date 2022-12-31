@@ -27,9 +27,9 @@ public class Function
     var logger = new Logger();
     var dynamoDbClient = new AmazonDynamoDBClient();
     var snsClient = new AmazonSimpleNotificationServiceClient();
-    var devicePairRepo = new DevicePairsRepository(dynamoDbClient, "DevicePairs");
-    var deviceRepo = new DeviceRepository(dynamoDbClient, "DevicesLocation");
-    var snsRepo = new NotificationRepository(snsClient, "arn:aws:sns:us-east-1:662642131450:PostNL_Topic");
+    var devicePairRepo = new DevicePairsRepository(dynamoDbClient, Environment.GetEnvironmentVariable(("Vehicle2Handheld")));
+    var deviceRepo = new DeviceRepository(dynamoDbClient, Environment.GetEnvironmentVariable(("DevicePositionTable")));
+    var snsRepo = new NotificationRepository(snsClient, Environment.GetEnvironmentVariable(("NotificationSNSTopic")));
 
     var tracker = new DistanceTracker(devicePairRepo, deviceRepo, snsRepo, logger);
     await tracker.Notify(input);

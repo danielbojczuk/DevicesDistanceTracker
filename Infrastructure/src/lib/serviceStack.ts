@@ -33,7 +33,7 @@ export class ServiceStack extends cdk.Stack {
 
     this.iotRule = iotRule(this, this.devicesDynamoDbTable.tableName, this.iotExecutionRole.roleArn);
 
-    this.distanceTrackerLambdaFunction = distanceTrackerLambdaFunction(this,lambdaFunctionName,this.lambdaExecutionRole);
+    this.distanceTrackerLambdaFunction = distanceTrackerLambdaFunction(this,lambdaFunctionName,this.lambdaExecutionRole, this.devicesDynamoDbTable.tableName);
 
     this.dynamoDbEventSource = eventSourceMapping(this,lambdaFunctionName,this.devicesDynamoDbTable.tableStreamArn as string);
   }
