@@ -1,6 +1,6 @@
 import { CfnTopicRule } from 'aws-cdk-lib/aws-iot';
-import { ServiceStack } from '../serviceStack';
-export const iotRule = (scope: ServiceStack, deviceDynamoDbTableName: string, iotRuleExecutionRoleArn: string):CfnTopicRule => 
+import { DistanceTrackerStack } from '../distanceTrackerStack';
+export const iotRule = (scope: DistanceTrackerStack, deviceDynamoDbTableName: string, iotRuleExecutionRoleArn: string):CfnTopicRule => 
    new CfnTopicRule(scope, "DevicesLocationRule", {
       ruleName: "DevicesLocationRule",
       topicRulePayload: {

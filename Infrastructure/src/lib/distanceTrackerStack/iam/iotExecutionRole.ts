@@ -1,7 +1,7 @@
 import { Arn } from 'aws-cdk-lib';
 import { Effect, PolicyDocument, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { ServiceStack } from '../serviceStack';
-export const iotExecutionRole = (scope: ServiceStack, deviceDynamoDbTableName: string):Role => 
+import { DistanceTrackerStack } from '../distanceTrackerStack';
+export const iotExecutionRole = (scope: DistanceTrackerStack, deviceDynamoDbTableName: string):Role => 
   new Role(scope, "IotRuleExecutionRole", {
       assumedBy: new ServicePrincipal("iot.amazonaws.com"),
       roleName: "IotRuleExecutionRole",

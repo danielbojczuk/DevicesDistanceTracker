@@ -1,10 +1,10 @@
-import { ServiceStack } from '../serviceStack';
+import { DistanceTrackerStack } from '../distanceTrackerStack';
 import { Architecture, Code, Function, Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { Duration } from 'aws-cdk-lib';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 
-export const distanceTrackerLambdaFunction = (scope: ServiceStack, deviceTrackerLambdaFunctionName: string, lambdaExecutionRole: IRole, deviceDynamoDbTableName: string ): Function => {
+export const distanceTrackerLambdaFunction = (scope: DistanceTrackerStack, deviceTrackerLambdaFunctionName: string, lambdaExecutionRole: IRole, deviceDynamoDbTableName: string ): Function => {
 
    const devicePairsTable = ssm.StringParameter.valueForStringParameter(
       scope, '/DevicesDistanceTracker/DevicePairs');

@@ -2,4 +2,4 @@
 ROOT_DIR=$(pwd)
 
 echo "### Deploying Service ###"
-cdk deploy --require-approval never
+cdk deploy --require-approval never --all

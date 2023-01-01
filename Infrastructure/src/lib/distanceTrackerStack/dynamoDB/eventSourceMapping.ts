@@ -1,6 +1,6 @@
 import { CfnEventSourceMapping, StartingPosition } from 'aws-cdk-lib/aws-lambda';
-import { ServiceStack } from '../serviceStack';
-export const eventSourceMapping = (scope: ServiceStack, deviceTrackerFunctionName:string, deviceDynamoDbTableStreamArn: string): CfnEventSourceMapping => {
+import { DistanceTrackerStack } from '../distanceTrackerStack';
+export const eventSourceMapping = (scope: DistanceTrackerStack, deviceTrackerFunctionName:string, deviceDynamoDbTableStreamArn: string): CfnEventSourceMapping => {
   const resource = new CfnEventSourceMapping(scope, "DynamoDbEventSource", {
       startingPosition: StartingPosition.LATEST,
       batchSize: 100,
