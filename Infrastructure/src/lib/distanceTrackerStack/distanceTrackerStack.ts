@@ -12,7 +12,7 @@ import { iotRule } from './iot/iotRule';
 import { lambdaExecutionRole } from './iam/lambdaExecutionRole';
 
 
-export class ServiceStack extends cdk.Stack {
+export class DistanceTrackerStack extends cdk.Stack {
   private devicesDynamoDbTable: Table;
   private iotExecutionRole: Role;
   private lambdaExecutionRole: Role;

@@ -1,0 +1,4 @@
+{
+  "ssm:account=662642131450:parameterName=/DevicesDistanceTracker/NotificationSNSTopic:region=us-east-1": "arn:aws:sns:us-east-1:662642131450:PostNL_Topic",
+  "ssm:account=662642131450:parameterName=/DevicesDistanceTrackerSmoketest/VehicleID:region=us-east-1": "VV:AA:AA:AA:01"
+}
