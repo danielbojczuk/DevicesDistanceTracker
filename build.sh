@@ -16,7 +16,7 @@ dotnet build
 
 echo "### Testing DistanceTrackerFunction ###"
 cd $ROOT_DIR/DistanceTrackerFunction/test
-dotnet test
+dotnet tes
 
 echo "### Building Infrastrucutre ###"
 cd $ROOT_DIR/Infrastructure/src
