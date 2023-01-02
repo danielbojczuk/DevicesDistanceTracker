@@ -3,6 +3,7 @@ import { Architecture, Code, Function, Runtime, Tracing } from 'aws-cdk-lib/aws-
 import { Duration } from 'aws-cdk-lib';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
 export const distanceTrackerSmoketestLambdaFunction = (scope: DistanceTrackerSmoketestStack, deviceTrackerSmoketestLambdaFunctionName: string, lambdaExecutionRole: IRole, queueUrl: string ): Function => {
 
@@ -20,7 +21,7 @@ export const distanceTrackerSmoketestLambdaFunction = (scope: DistanceTrackerSmo
       memorySize: 256,
       architecture: Architecture.ARM_64,
       handler: "DevicesDistanceTrackerSmoketest::DevicesDistanceTrackerSmoketest.Function::FunctionHandler",
-      code: Code.fromAsset("deploy/DistanceTrackerFunctionSmoketest"),
+      code: Code.fromBucket( Bucket.fromBucketArn(scope,"DeploymentBucket","arn:aws:s3:::devices-distance-tracker-deployment") ,`DistanceTrackerFunctionSmoketest_${process.env.SERVICE_VERSION}.zip`),
       role: lambdaExecutionRole,
       functionName: deviceTrackerSmoketestLambdaFunctionName,
       timeout: Duration.seconds(180),
