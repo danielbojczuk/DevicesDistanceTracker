@@ -21,7 +21,7 @@ export const distanceTrackerSmoketestLambdaFunction = (scope: DistanceTrackerSmo
       memorySize: 256,
       architecture: Architecture.ARM_64,
       handler: "DevicesDistanceTrackerSmoketest::DevicesDistanceTrackerSmoketest.Function::FunctionHandler",
-      code: Code.fromAsset("deploy/DistanceTrackerFunctionSmoketest"),
+      code: Code.fromBucket( Bucket.fromBucketArn(scope,"DeploymentBucket","arn:aws:s3:::devices-distance-tracker-deployment") ,`DistanceTrackerFunctionSmoketest_${process.env.SERVICE_VERSION}.zip`),
       role: lambdaExecutionRole,
       functionName: deviceTrackerSmoketestLambdaFunctionName,
       timeout: Duration.seconds(180),
