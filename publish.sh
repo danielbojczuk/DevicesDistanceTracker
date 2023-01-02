@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 ROOT_DIR=$(pwd)
+VERSION=$(cat version)
 rm -rf ./deploy/
 
 echo "### Publishing DistanceTrackerFunction ###"
@@ -11,4 +12,8 @@ echo "### Publishing DistanceTrackerFunctionSmoketest ###"
 cd $ROOT_DIR/DistanceTrackerFunctionSmoketest/src
 dotnet publish -c Release -r linux-arm64 --no-self-contained -o ../../deploy/DistanceTrackerFunctionSmoketest
 
-echo **************$CODEBUILD_SOURCE_VERSION
+cd $ROOT_DIR/deploy/DistanceTrackerFunction
+zip DistanceTrackerFunction_$VERSION.zip *
+
+cd $ROOT_DIR/deploy/DistanceTrackerFunctionSmoketest
+zip DistanceTrackerFunctionSmoketest_$VERSION.zip *
