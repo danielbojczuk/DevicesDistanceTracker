@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 ROOT_DIR=$(pwd)
-VERSION=$(cat version)
 rm -rf ./deploy/
 
 echo "### Publishing DistanceTrackerFunction ###"
