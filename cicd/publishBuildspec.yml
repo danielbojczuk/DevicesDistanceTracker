@@ -2,10 +2,13 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Entered the install phase...
       - apt-get update -y
       - sudo apt-get install -y dotnet-sdk-6.0
       - sudo apt-get install -y aspnetcore-runtime-6.0
   build:
     commands:
       - ./publish.sh
+artifacts:
+  files:
+    - "./deploy/DistanceTrackerFunction/*"
+    - "./deploy/DistanceTrackerFunctionSmoketest/*"

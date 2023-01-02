@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh
+      - sudo bash nodesource_setup.sh
+      - sudo apt install nodejs
+      - sudo npm install -g aws-cdk
+      - mv $CODEBUILD_SRC_DIR_BuildArtifact/deploy ./
+      - export AWS_ACCOUNT=$(aws sts get-caller-identity --output text | awk '{print $1}')
+  build:
+    commands:
+      - ./deploy.sh
