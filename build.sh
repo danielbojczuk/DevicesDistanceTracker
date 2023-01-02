@@ -2,8 +2,6 @@
 set -e
 ROOT_DIR=$(pwd)
 
-rm -rf ./deploy/
-
 echo "### Building DistanceTrackerFunction ###"
 cd $ROOT_DIR/DistanceTrackerFunction/src
 dotnet restore
