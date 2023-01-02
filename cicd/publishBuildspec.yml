@@ -10,5 +10,5 @@ phases:
       - ./publish.sh
 artifacts:
   files:
-    - "./deploy/DistanceTrackerFunction/DistanceTrackerFunction_$(cat version)"
-    - "./deploy/DistanceTrackerFunctionSmoketest/DistanceTrackerFunctionSmoketest_$(cat version)"
+    - "./deploy/DistanceTrackerFunction/DistanceTrackerFunction_$(cat version).zip"
+    - "./deploy/DistanceTrackerFunctionSmoketest/DistanceTrackerFunctionSmoketest_$(cat version).zip"
