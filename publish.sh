@@ -13,7 +13,5 @@ cd $ROOT_DIR/DistanceTrackerFunctionSmoketest/src
 dotnet publish -c Release -r linux-arm64 --no-self-contained -o ../../deploy/DistanceTrackerFunctionSmoketest
 
 cd $ROOT_DIR/deploy/DistanceTrackerFunction
-zip DistanceTrackerFunction_$VERSION.zip *
 
 cd $ROOT_DIR/deploy/DistanceTrackerFunctionSmoketest
-zip DistanceTrackerFunctionSmoketest_$VERSION.zip *
