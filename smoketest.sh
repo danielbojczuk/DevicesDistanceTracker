@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 aws lambda invoke --function-name DevicesDistanceTrackerSmoketest ./test.out > output.txt
 grep FunctionError output.txt
 if [ "$?" -eq 0 ]; then

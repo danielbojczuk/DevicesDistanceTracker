@@ -18,7 +18,7 @@ export const distanceTrackerLambdaFunction = (scope: DistanceTrackerStack, devic
       memorySize: 512,
       architecture: Architecture.ARM_64,
       handler: "DistanceTrackerFunction::DistanceTrackerFunction.Function::FunctionHandler",
-      code: Code.fromBucket( Bucket.fromBucketArn(scope,"DeploymentBucket","arn:aws:s3:::devices-distance-tracker-deployment") ,`DistanceTrackerFunction_${process.env.SERVICE_VERSION}.zip`),
+      code: Code.fromAsset("deploy/DistanceTrackerFunction"),
       role: lambdaExecutionRole,
       functionName: deviceTrackerLambdaFunctionName,
       timeout: Duration.seconds(15),
