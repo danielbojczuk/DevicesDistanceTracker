@@ -9,6 +9,9 @@ phases:
       - sudo npm install -g aws-cdk
       - mv $CODEBUILD_SRC_DIR_BuildArtifact/deploy ./
       - ls -lah
+      - export AWS_ACCOUNT=$(aws sts get-caller-identity --output text | awk '{print $1}')
+      - echo $AWS_ACCOUNT
+      - echo $AWS_REGION
   build:
     commands:
       - ./deploy.sh
